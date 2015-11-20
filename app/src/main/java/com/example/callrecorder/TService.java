@@ -92,52 +92,60 @@ public class TService extends Service {
         String state;
         String inCall, outCall;
         public boolean wasRinging = false;
+        public boolean setUpRecording= false;
 
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(ACTION_IN)) {
                 if ((bundle = intent.getExtras()) != null) {
                     state = bundle.getString(TelephonyManager.EXTRA_STATE);
+//                    Toast.makeText(context, "state changed : " + state, Toast.LENGTH_LONG).show();
                     if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                         inCall = bundle.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
-                        wasRinging = true;
+                        wasRinging = true; setUpRecording=true;
                         Toast.makeText(context, "INcoming : " + inCall, Toast.LENGTH_LONG).show();
                     } else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+
                         if (wasRinging == true) {
 
                             Toast.makeText(context, "ANSWERED", Toast.LENGTH_LONG).show();
+                            if(setUpRecording) {
 
-                            String out = new SimpleDateFormat("dd-MM-yyyy hh-mm-ss").format(new Date());
-                            File sampleDir = new File(Environment.getExternalStorageDirectory(), "/TestRecordingDasa1");
-                            if (!sampleDir.exists()) {
-                                sampleDir.mkdirs();
-                            }
-                            String file_name = "Record";
-                            try {
-                                audiofile = File.createTempFile(file_name, ".amr", sampleDir);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                Log.d("save exception", "error"+e);
-                            }
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+//                                String out = new SimpleDateFormat("dd-MM-yyyy hh-mm-ss").format(new Date());
+                                File sampleDir = new File(Environment.getExternalStorageDirectory(), "/TestRecordingDasa1");
+                                if (!sampleDir.exists()) {
+                                    sampleDir.mkdirs();
+                                }
+                                String file_name = "Record";
+                                try {
+                                    audiofile = File.createTempFile(file_name, ".amr", sampleDir);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Log.d("save exception", "error" + e);
+                                    Log.e("xxxxxx","xxxxxx");
+                                }
+                                String path = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-                            recorder = new MediaRecorder();
+                                recorder = new MediaRecorder();
 //                          recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
 
-                            recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
-                            recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-                            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-                            recorder.setOutputFile(audiofile.getAbsolutePath());
-                            try {
-                                recorder.prepare();
-                            } catch (IllegalStateException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                                recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+                                recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+                                recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                                recorder.setOutputFile(audiofile.getAbsolutePath());
+                                try {
+                                    recorder.prepare();
+                                } catch (IllegalStateException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                recorder.start();
+                                recordstarted = true;
+                                setUpRecording=false;
                             }
-                            recorder.start();
-                            recordstarted = true;
                         }
+//
                     } else if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
                         wasRinging = false;
                         Toast.makeText(context, "REJECT || DISCO", Toast.LENGTH_LONG).show();
@@ -146,6 +154,7 @@ public class TService extends Service {
                             recordstarted = false;
                         }
                     }
+
                 }
             } else if (intent.getAction().equals(ACTION_OUT)) {
                 if ((bundle = intent.getExtras()) != null) {
