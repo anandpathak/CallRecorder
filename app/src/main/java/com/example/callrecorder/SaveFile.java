@@ -24,7 +24,7 @@ public class SaveFile {
     {
         this.recorder=recorder;
     }*/
-    public void startRecording(){
+    public void startRecording() {
         Log.d("recording Started" , "Yo I have been called" );
         String out = new SimpleDateFormat("dd-MM-yyyy hh-mm-ss").format(new Date());
         File sampleDir = new File(Environment.getExternalStorageDirectory(), "/TestRecordingDasa1");
@@ -42,7 +42,43 @@ public class SaveFile {
 
           //                       recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
 
-        TService.recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+        try {
+            MediaRecorder r = new MediaRecorder();
+            r.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+            r.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            r.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            r.setOutputFile(audiofile.getAbsolutePath());
+            r.setAudioSamplingRate(96000);
+            r.start();
+            r.stop();
+            r.reset();
+            r.release();
+            r = null;
+            TService.recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+        }
+        catch (Exception e)
+        {
+            Log.d("State" , "Your phone does not support VOICE_CALL");
+            MediaRecorder r = new MediaRecorder();
+            r.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+            r.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+            r.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            r.setOutputFile(audiofile.getAbsolutePath());
+            try {
+                r.prepare();
+            } catch (IllegalStateException e1) {
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+
+            }
+            r.start();
+            r.stop();
+            r.reset();
+            r = null;
+            TService.recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+        }
+//        TService.recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
         TService.recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
         TService.recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
         TService.recorder.setOutputFile(audiofile.getAbsolutePath());

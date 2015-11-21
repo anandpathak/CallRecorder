@@ -72,7 +72,13 @@ public class TService extends BroadcastReceiver  {
                             if (setUpRecording) {
                                 recordstarted = true;
                                 setUpRecording = false;
-                                SaveRecording.startRecording();
+                    //            SaveRecording.startRecording();
+                                try {
+                                    SaveRecording.startRecording();
+                                }
+                                catch (Exception e){
+                                    Log.d("Recording Exception1 : ",e.toString());
+                                }
 
                             }
                         }
@@ -97,7 +103,12 @@ public class TService extends BroadcastReceiver  {
                     outCall = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
                     Toast.makeText(context, "OUT : " + outCall, Toast.LENGTH_LONG).show();
                     //                   saverecordings.startRecording();
-                    SaveRecording.startRecording();
+                    try {
+                        SaveRecording.startRecording();
+                    }
+                    catch (Exception e){
+                        Log.d("Recording Exception2", e.toString());
+                    }
                     recordstarted = true;
                     setUpRecording = false;
 
