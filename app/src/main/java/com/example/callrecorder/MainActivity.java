@@ -15,10 +15,6 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int REQUEST_CODE = 0;
-    private DevicePolicyManager mDPM;
-    private ComponentName mAdminName;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,26 +31,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 */
-        try {
-            // Initiate DevicePolicyManager.
-            mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-            mAdminName = new ComponentName(this, DeviceAdminDemo.class);
-
-            if (!mDPM.isAdminActive(mAdminName)) {
-                Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminName);
-                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Click on Activate button to secure your application.");
-                startActivityForResult(intent, REQUEST_CODE);
-            } else {
-                // mDPM.lockNow();
-                // Intent intent = new Intent(MainActivity.this,
-                // TrackDeviceService.class);
-                // startService(intent);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     @Override
@@ -79,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
+/*    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -87,5 +63,12 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, TService.class);
             startService(intent);
         }
+    }
+    */
+// broadcast a custom intent.
+    public void broadcastIntent(View view){
+        Intent intent = new Intent();
+        intent.setAction("com.example.callrecorder.Tservice");
+        sendBroadcast(intent);
     }
 }

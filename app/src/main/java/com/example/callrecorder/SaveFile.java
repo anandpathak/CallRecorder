@@ -14,11 +14,16 @@ import java.util.Date;
  */
 public class SaveFile {
 
-    static MediaRecorder recorder;
+ //   MediaRecorder recorder = TService.recorder;
     File audiofile;
     String audio_format;
     public String Audio_Type;
     int audioSource;
+
+   /* public SaveFile(MediaRecorder recorder)
+    {
+        this.recorder=recorder;
+    }*/
     public void startRecording(){
         Log.d("recording Started" , "Yo I have been called" );
         String out = new SimpleDateFormat("dd-MM-yyyy hh-mm-ss").format(new Date());
@@ -35,23 +40,23 @@ public class SaveFile {
         }
         String path = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-        recorder = new MediaRecorder();
-//                          recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+          //                       recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
 
-        recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        recorder.setOutputFile(audiofile.getAbsolutePath());
+        TService.recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+        TService.recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+        TService.recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        TService.recorder.setOutputFile(audiofile.getAbsolutePath());
         try {
-            recorder.prepare();
+            TService.recorder.prepare();
         } catch (IllegalStateException e) {
             e.printStackTrace();
+            Log.d("Problem" , "recoder.prepare has problem" );
         } catch (IOException e) {
             e.printStackTrace();
         }
-        recorder.start();
+        TService.recorder.start();
     }
     public void stopRecording(){
-       recorder.stop();
+       TService.recorder.stop();
     }
 }
