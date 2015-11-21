@@ -1,8 +1,14 @@
 package com.example.callrecorder;
 
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.MediaRecorder;
 import android.os.Environment;
+
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Switch;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +30,7 @@ public class SaveFile {
     {
         this.recorder=recorder;
     }*/
-    public void startRecording() {
+    public void startRecording(String method) {
         Log.d("recording Started" , "Yo I have been called" );
         String out = new SimpleDateFormat("dd-MM-yyyy hh-mm-ss").format(new Date());
         File sampleDir = new File(Environment.getExternalStorageDirectory(), "/TestRecordingDasa1");
@@ -40,8 +46,8 @@ public class SaveFile {
         }
         String path = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-          //                       recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
-
+//                                 recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+/*
         try {
             MediaRecorder r = new MediaRecorder();
             r.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
@@ -77,6 +83,24 @@ public class SaveFile {
             r.reset();
             r = null;
             TService.recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+        }
+
+*/
+
+       Log.d("message",method);
+        switch(method){
+            case "DEFAULT":
+                TService.recorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+                break;
+            case "VOICE_COMMUNICATION":
+                TService.recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+                break;
+            case  "VOICE_CALL":
+                TService.recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_CALL);
+                break;
+            default:
+                TService.recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+                break;
         }
 //        TService.recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
         TService.recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#d4ebe5">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose an Audio Source"
+        android:id="@+id/textView" />
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/radiogroup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RadioButton android:id="@+id/VOICE_CALL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="VOICE_CALL"
+            android:onClick="onRadioButtonClicked"/>
+        <RadioButton android:id="@+id/VOICE_COMMUNICATION"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="VOICE_COMMUNICATION"
+            android:onClick="onRadioButtonClicked"/>
+        <RadioButton android:id="@+id/DEFAULT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DEFAULT"
+            android:onClick="onRadioButtonClicked"/>
+    </RadioGroup>
+
+</LinearLayout>

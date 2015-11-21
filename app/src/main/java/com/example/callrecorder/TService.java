@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
@@ -51,6 +52,7 @@ public class TService extends BroadcastReceiver  {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            SharedPreferences settings =context.getSharedPreferences("AUDIO_SOURCE", 0);
             if (intent.getAction().equals(ACTION_IN)) {
                 if ((bundle = intent.getExtras()) != null) {
                     state = bundle.getString(TelephonyManager.EXTRA_STATE);
@@ -74,7 +76,9 @@ public class TService extends BroadcastReceiver  {
                                 setUpRecording = false;
                     //            SaveRecording.startRecording();
                                 try {
-                                    SaveRecording.startRecording();
+                                    String method = settings.getString("AUDIO_SOURCE", "");
+                                    Log.d("message", method);
+                                    SaveRecording.startRecording(method);
                                 }
                                 catch (Exception e){
                                     Log.d("Recording Exception1 : ",e.toString());
@@ -104,7 +108,9 @@ public class TService extends BroadcastReceiver  {
                     Toast.makeText(context, "OUT : " + outCall, Toast.LENGTH_LONG).show();
                     //                   saverecordings.startRecording();
                     try {
-                        SaveRecording.startRecording();
+                        String method = settings.getString("AUDIO_SOURCE", "");
+                        Log.d("message", method);
+                        SaveRecording.startRecording(method);
                     }
                     catch (Exception e){
                         Log.d("Recording Exception2", e.toString());
