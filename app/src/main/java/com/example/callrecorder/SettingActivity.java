@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by DELLANAND on 22/11/2015.
@@ -27,10 +30,34 @@ public class SettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting);
 
+        username=(EditText)findViewById(R.id.USERNAME);
+        passwd=(EditText)findViewById(R.id.PASSWORD);
+        ftp=(EditText)findViewById(R.id.FPT_HOST);
         Context context = getApplicationContext();
         settings =context.getSharedPreferences("AUDIO_SOURCE", 0);
         editor = settings.edit();
+        RadioGroup rg=(RadioGroup)findViewById(R.id.radiogroup);
 
+        //rg.check(R.id.DEFAULT);
+        //Set variables
+        String choice = settings.getString("AUDIO_SOURCE","");
+        switch (choice){
+            case "DEFAULT":
+                rg.check(R.id.DEFAULT);
+                break;
+            case  "VOICE_COMMUNICATION" :
+                rg.check(R.id.VOICE_COMMUNICATION);
+                break;
+            case "VOICE_CALL" :
+                rg.check(R.id.VOICE_CALL);
+                break;
+            default:
+                rg.check(R.id.VOICE_CALL);
+        }
+        Log.d("value" , settings.getString("USERNAME","") );
+        username.setText(settings.getString("USERNAME",""), null);
+        passwd.setText(settings.getString("PASSWORD",""));
+        ftp.setText(settings.getString("FTP_HOST",""));
     }
 
     @Override
@@ -88,12 +115,11 @@ public class SettingActivity extends AppCompatActivity {
         }
     }
     public void OnSaveButtonClicked(View view){
-        EditText username=(EditText)findViewById(R.id.USERNAME);
-        EditText passwd=(EditText)findViewById(R.id.PASSWORD);
-        EditText ftp=(EditText)findViewById(R.id.FPT_HOST);
+
         editor.putString("USERNAME",username.getText().toString());
         editor.putString("PASSWORD",passwd.getText().toString());
-        editor.putString("FTP_HOST",ftp.getText().toString());
+        editor.putString("FTP_HOST", ftp.getText().toString());
         editor.commit();
+        Toast.makeText(getApplicationContext(),"Saved !" , Toast.LENGTH_LONG).show();
     }
 }
