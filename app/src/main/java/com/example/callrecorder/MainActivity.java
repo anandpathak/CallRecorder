@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +27,8 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     SharedPreferences settings;
+    SharedPreferences.Editor editor;
+    EditText username,passwd,ftp;
     PopupWindow pw;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,11 @@ public class MainActivity extends AppCompatActivity {
 
         Context context = getApplicationContext();
         settings =context.getSharedPreferences("AUDIO_SOURCE", 0);
+        editor = settings.edit();
+        EditText username = (EditText)findViewById(R.id.USERNAME);
+        EditText passwd = (EditText)findViewById(R.id.PASSWORD);
+        EditText fpt = (EditText)findViewById(R.id.FPT_HOST);
+
 /*        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
-        SharedPreferences.Editor editor = settings.edit();
+
         editor.remove("AUDIO_SOURCE");
         editor.commit();
         // Check which radio button was clicked
@@ -152,15 +160,14 @@ public class MainActivity extends AppCompatActivity {
         sendBroadcast(intent);
     }
     public void OnSaveButtonClicked(View view){
-        EditText usr = (EditText)findViewById(R.id.username);
-        EditText passwd = (EditText)findViewById(R.id.passowrd);
-        EditText fpt = (EditText)findViewById(R.id.fpt_host);
-        SharedPreferences.Editor editor = settings.edit();
 
-        editor.putString("USERNAME",usr.getText().toString());
-        editor.putString("PASSWORD",passwd.getText().toString());
-        editor.putString("FPT_HOST",fpt.getText().toString());
-        editor.commit();
+//        SharedPreferences.Editor editor = settings.edit();
+//        usr.setText("xxx", TextView.BufferType.EDITABLE);
+
+//        editor.putString("USERNAME",usr.getText().toString());
+//        editor.putString("PASSWORD",passwd.getText().toString());
+ //       editor.putString("FPT_HOST",fpt.getText().toString());
+  //      editor.commit();
     }
 
 }

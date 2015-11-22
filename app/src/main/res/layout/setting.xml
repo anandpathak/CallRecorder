@@ -2,7 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#d4ebe5">
+    android:background="#e997909a"
+    android:weightSum="1"
+    android:baselineAligned="false"
+    android:clickable="false">
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,32 +35,42 @@
             android:onClick="onRadioButtonClicked"/>
     </RadioGroup>
 
-    <EditText
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/username"
-        android:hint="Username" />
+        android:background="#a6a0aeb9"
+        android:layout_weight="0.28">
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="USERNAME"
+            android:id="@+id/USERNAME"
+            />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/passowrd"
-        android:hint="password" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="PASSWORD"
+            android:id="@+id/PASSWORD"
+            android:password="true"
+            android:layout_gravity="center_horizontal|top" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/fpt_host"
-        android:hint="FPT_HOST" />
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="FPT HOST"
+            android:id="@+id/FPT_HOST"
+            android:layout_gravity="right|top" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save"
-        android:id="@+id/button"
-        android:layout_gravity="center_horizontal"
-        android:onClick="OnSaveButtonClicked"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:id="@+id/save"
+            android:layout_gravity="center_horizontal|bottom"
+            android:onClick="OnSaveButtonClicked"
+            android:clickable="true" />
+
+    </FrameLayout>
 
 </LinearLayout>
