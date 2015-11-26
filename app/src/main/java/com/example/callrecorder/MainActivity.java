@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     ListView listview;
     MediaPlayer mediaPlayer = new MediaPlayer();
     boolean flag=false;
+    Integer imageId= R.drawable.play;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,13 +49,15 @@ public class MainActivity extends AppCompatActivity {
         listview = (ListView)findViewById(R.id.listview);
         final ArrayList<String> list= Filelist();
         final ArrayList<String> list2=new ArrayList<>();
-        String s="";
+        String[] s= new String[list.size()];
+        String v="";
         for(int j=0; j < list.size();j++) {
-            s=list.get(j);
-            list2.add(j,s.substring(s.lastIndexOf("/")+1));
+            v=list.get(j);
+            list2.add(j,v.substring(v.lastIndexOf("/")+1));
+            s[j]=list2.get(j);
   //          Log.d("data",s);
         }
-        final StableArrayAdapter adapter = new StableArrayAdapter(this,android.R.layout.simple_list_item_1, list2);
+        CustomList adapter = new CustomList(MainActivity.this, s, imageId);
         listview.setAdapter(adapter);
 /*        Context context = getApplicationContext();
         settings =context.getSharedPreferences("AUDIO_SOURCE", 0);
@@ -71,42 +75,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 */
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+     /*   listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> parent, final View view,
+            public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                flag=!flag;
- //               final String item = (String) parent.getItemAtPosition(position);
-                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    view.animate().setDuration(2000).alpha(0)
-                            .withEndAction(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    list.remove(item);
-                                    adapter.notifyDataSetChanged();
-                                    view.setAlpha(1);
-                                }
-                            });
-                } else {
-                    view.animate().setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            list.remove(item);
-                            adapter.notifyDataSetChanged();
-                            view.setAlpha(1);
-                        }
-                    });
-                }*/
-
-                    Log.d("position", " " + position);
- //                   playmusic(list.get(position), flag);
-
+                    Log.d("View" , " " + view.getId() + " "+  R.id.img);
 
             }
+        });*/
 
-        });
     }
 
 
@@ -118,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -258,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }*/
-    private class StableArrayAdapter extends ArrayAdapter<String> {
+   /* private class StableArrayAdapter extends ArrayAdapter<String> {
 
         HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
 
@@ -281,5 +261,5 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-    }
+    }*/
 }
