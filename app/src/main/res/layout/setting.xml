@@ -29,7 +29,8 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/setting" tools:context=".SettingActivity"
         android:orientation="vertical"
-        android:weightSum="1">
+        android:weightSum="1"
+        style="@style/Base.TextAppearance.AppCompat.Title">
 
     <TextView
         android:layout_width="wrap_content"
@@ -62,40 +63,41 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#a6a0aeb9"
+        android:background="#a6ddebf5"
         android:id="@+id/frameLayout"
-        android:layout_weight="0.25">
+        android:layout_weight="0.28"
+        style="@style/AlertDialog.AppCompat.Light">
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="219dp"
             android:layout_height="wrap_content"
             android:hint="USERNAME"
             android:id="@+id/USERNAME"
             />
 
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="214dp"
             android:layout_height="wrap_content"
             android:hint="PASSWORD"
             android:id="@+id/PASSWORD"
             android:password="true"
-            android:layout_gravity="center_horizontal|top" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="FPT HOST"
-            android:id="@+id/FPT_HOST"
-            android:layout_gravity="right|top" />
+            android:layout_gravity="left|center_vertical" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Save"
             android:id="@+id/save"
-            android:layout_gravity="center_horizontal|bottom"
+            android:layout_gravity="right|center_vertical"
             android:onClick="OnSaveButtonClicked"
             android:clickable="true"
             />
+
+        <EditText
+            android:layout_width="212dp"
+            android:layout_height="wrap_content"
+            android:hint="FPT HOST"
+            android:id="@+id/FPT_HOST"
+            android:layout_gravity="left|bottom" />
 
     </FrameLayout>
 

@@ -1,8 +1,16 @@
 package com.example.callrecorder;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,7 +18,16 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -18,14 +35,26 @@ public class MainActivity extends AppCompatActivity {
     /*SharedPreferences settings;
     SharedPreferences.Editor editor;
     EditText username,passwd,ftp;*/
-
+    ListView listview;
+    MediaPlayer mediaPlayer = new MediaPlayer();
+    boolean flag=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        listview = (ListView)findViewById(R.id.listview);
+        final ArrayList<String> list= Filelist();
+        final ArrayList<String> list2=new ArrayList<>();
+        String s="";
+        for(int j=0; j < list.size();j++) {
+            s=list.get(j);
+            list2.add(j,s.substring(s.lastIndexOf("/")+1));
+  //          Log.d("data",s);
+        }
+        final StableArrayAdapter adapter = new StableArrayAdapter(this,android.R.layout.simple_list_item_1, list2);
+        listview.setAdapter(adapter);
 /*        Context context = getApplicationContext();
         settings =context.getSharedPreferences("AUDIO_SOURCE", 0);
         editor = settings.edit();
@@ -42,7 +71,45 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 */
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, final View view,
+                                    int position, long id) {
+                flag=!flag;
+ //               final String item = (String) parent.getItemAtPosition(position);
+                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    view.animate().setDuration(2000).alpha(0)
+                            .withEndAction(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    list.remove(item);
+                                    adapter.notifyDataSetChanged();
+                                    view.setAlpha(1);
+                                }
+                            });
+                } else {
+                    view.animate().setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            list.remove(item);
+                            adapter.notifyDataSetChanged();
+                            view.setAlpha(1);
+                        }
+                    });
+                }*/
+
+                    Log.d("position", " " + position);
+ //                   playmusic(list.get(position), flag);
+
+
+            }
+
+        });
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -159,4 +226,60 @@ public class MainActivity extends AppCompatActivity {
   //      editor.commit();
     }*/
 
+    public ArrayList<String> Filelist(){
+        ArrayList<String> list = new ArrayList<String>();
+        File fileDirectory = new File(Environment.getExternalStorageDirectory()+"/TestRecordingDasa1");
+        File[] dirFiles = fileDirectory.listFiles();
+        if(dirFiles.length != 0) {
+            // loops through the array of files, outputing the name to console
+            for (int ii = 0; ii < dirFiles.length; ii++) {
+                String fileOutput = dirFiles[ii].toString();
+                Log.d("filelist" ,fileOutput);
+                list.add(fileOutput);
+            }
+        }
+        return list;
+    }
+/*    public void playmusic(String filepath , boolean flag){
+        Uri myuri=Uri.fromFile(new File(filepath));
+        if(flag) {
+
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            try {
+                mediaPlayer.setDataSource(getApplicationContext(), myuri);
+                mediaPlayer.prepare();
+                mediaPlayer.start();
+                Toast.makeText(this,"playing",Toast.LENGTH_LONG).show();
+            }
+            catch (Exception e){
+                Log.d("can't play" , "no file found");
+                Toast.makeText(this,"can't able to play",Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }*/
+    private class StableArrayAdapter extends ArrayAdapter<String> {
+
+        HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
+
+        public StableArrayAdapter(Context context, int textViewResourceId,
+                                  List<String> objects) {
+            super(context, textViewResourceId, objects);
+            for (int i = 0; i < objects.size(); ++i) {
+                mIdMap.put(objects.get(i), i);
+            }
+        }
+
+        @Override
+        public long getItemId(int position) {
+            String item = getItem(position);
+            return mIdMap.get(item);
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return true;
+        }
+
+    }
 }
