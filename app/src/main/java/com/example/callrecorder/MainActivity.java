@@ -49,16 +49,15 @@ public class MainActivity extends AppCompatActivity {
         listview = (ListView)findViewById(R.id.listview);
         final ArrayList<String> list= Filelist();
         final ArrayList<String> list2=new ArrayList<>();
-        String[] s= new String[list.size()];
         String v="";
         for(int j=0; j < list.size();j++) {
             v=list.get(j);
             list2.add(j,v.substring(v.lastIndexOf("/")+1));
-            s[j]=list2.get(j);
-  //          Log.d("data",s);
+
         }
-        CustomList adapter = new CustomList(MainActivity.this, s, imageId, list);
+        CustomList adapter = new CustomList(MainActivity.this,imageId, list , list2);
         listview.setAdapter(adapter);
+
 /*        Context context = getApplicationContext();
         settings =context.getSharedPreferences("AUDIO_SOURCE", 0);
         editor = settings.edit();
@@ -75,15 +74,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 */
-     /*   listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                    Log.d("View" , " " + view.getId() + " "+  R.id.img);
-
-            }
-        });*/
 
     }
 
@@ -112,30 +103,6 @@ public class MainActivity extends AppCompatActivity {
 //            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             Intent intent1= new Intent(this,SettingActivity.class);
             startActivity(intent1);
-
- //           String checked = settings.getString("AUDIO_SOURCE", "");
-            /*Log.d("radio" , checked);
-            RadioGroup r =(RadioGroup)findViewById(R.id.radiogroup);
-            switch (checked){
-                case "DEFAULT":
-                      r.check(R.id.DEFAULT);
-                    break;
-                case "VOICE_CALL":
-//                    b = (RadioButton) findViewById(R.id.VOICE_CALL);
-//                    b.setChecked(true);
-                    r.check(R.id.VOICE_CALL);
-                    break;
-                case "VOICE_COMMUNICATION":
-//                    b = (RadioButton) findViewById(R.id.VOICE_COMMUNICATION);
-//                    b.setChecked(true);
-                    r.check(R.id.VOICE_COMMUNICATION);
-                    break;
-                default:
-//                    b = (RadioButton) findViewById(R.id.VOICE_COMMUNICATION);
-//                    b.setChecked(true);
-                    r.check(R.id.VOICE_COMMUNICATION);
-                    break;
-            }*/
             return true;
         }
        else if(id== android.R.id.home)
@@ -146,37 +113,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-   /* public void onRadioButtonClicked(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
-
-        editor.remove("AUDIO_SOURCE");
-        editor.commit();
-        // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.DEFAULT:
-                if (checked)
-                {
-                    editor.putString("AUDIO_SOURCE", "DEFAULT");
-                    editor.commit();
-                }
-                    break;
-            case R.id.VOICE_COMMUNICATION:
-                if (checked)
-                {
-                    editor.putString("AUDIO_SOURCE", "VOICE_COMMUNICATION");
-                    editor.commit();
-                }
-                    break;
-            case R.id.VOICE_CALL:
-                if (checked)
-                {
-                    editor.putString("AUDIO_SOURCE", "VOICE_CALL");
-                    editor.commit();
-                }
-                    break;
-        }
-    }*/
 
 
 /*    @Override
@@ -195,17 +131,6 @@ public class MainActivity extends AppCompatActivity {
         intent.setAction("com.example.callrecorder.Tservice");
         sendBroadcast(intent);
     }
-    /*public void OnSaveButtonClicked(View view){
-
-//        SharedPreferences.Editor editor = settings.edit();
-//        usr.setText("xxx", TextView.BufferType.EDITABLE);
-
-//        editor.putString("USERNAME",usr.getText().toString());
-//        editor.putString("PASSWORD",passwd.getText().toString());
- //       editor.putString("FPT_HOST",fpt.getText().toString());
-  //      editor.commit();
-    }*/
-
     public ArrayList<String> Filelist(){
         ArrayList<String> list = new ArrayList<String>();
         File fileDirectory = new File(Environment.getExternalStorageDirectory()+"/TestRecordingDasa1");
@@ -220,46 +145,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return list;
     }
-/*    public void playmusic(String filepath , boolean flag){
-        Uri myuri=Uri.fromFile(new File(filepath));
-        if(flag) {
 
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            try {
-                mediaPlayer.setDataSource(getApplicationContext(), myuri);
-                mediaPlayer.prepare();
-                mediaPlayer.start();
-                Toast.makeText(this,"playing",Toast.LENGTH_LONG).show();
-            }
-            catch (Exception e){
-                Log.d("can't play" , "no file found");
-                Toast.makeText(this,"can't able to play",Toast.LENGTH_LONG).show();
-            }
-        }
-
-    }*/
-   /* private class StableArrayAdapter extends ArrayAdapter<String> {
-
-        HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
-
-        public StableArrayAdapter(Context context, int textViewResourceId,
-                                  List<String> objects) {
-            super(context, textViewResourceId, objects);
-            for (int i = 0; i < objects.size(); ++i) {
-                mIdMap.put(objects.get(i), i);
-            }
-        }
-
-        @Override
-        public long getItemId(int position) {
-            String item = getItem(position);
-            return mIdMap.get(item);
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
-
-    }*/
 }

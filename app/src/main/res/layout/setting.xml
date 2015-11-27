@@ -68,7 +68,7 @@
         android:layout_weight="0.28"
         style="@style/AlertDialog.AppCompat.Light">
         <EditText
-            android:layout_width="219dp"
+            android:layout_width="207dp"
             android:layout_height="wrap_content"
             android:hint="USERNAME"
             android:id="@+id/USERNAME"
