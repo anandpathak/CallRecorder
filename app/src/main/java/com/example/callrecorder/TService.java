@@ -78,7 +78,7 @@ public class TService extends BroadcastReceiver  {
                                 try {
                                     String method = settings.getString("AUDIO_SOURCE", "");
                                     Log.d("message", method);
-                                    SaveRecording.startRecording(method);
+                                    SaveRecording.startRecording(method,inCall,"-In");
                                 }
                                 catch (Exception e){
                                     Log.d("Recording Exception1 : ",e.toString());
@@ -110,7 +110,7 @@ public class TService extends BroadcastReceiver  {
                     try {
                         String method = settings.getString("AUDIO_SOURCE", "");
                         Log.d("message", method);
-                        SaveRecording.startRecording(method);
+                        SaveRecording.startRecording(method,outCall,"-Out");
                     }
                     catch (Exception e){
                         Log.d("Recording Exception2", e.toString());

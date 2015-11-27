@@ -30,17 +30,18 @@ public class SaveFile {
     {
         this.recorder=recorder;
     }*/
-    public void startRecording(String method) {
+    public void startRecording(String method,String filename, String state) {
         Log.d("recording Started" , "Yo I have been called" );
         String out = new SimpleDateFormat("dd-MM-yyyy hh-mm-ss").format(new Date());
         File sampleDir = new File(Environment.getExternalStorageDirectory(), "/TestRecordingDasa1");
         if (!sampleDir.exists()) {
             sampleDir.mkdirs();
         }
-        String file_name = "Record";
+        String file_name = filename;
         try {
-            audiofile = File.createTempFile(file_name, ".amr", sampleDir);
-        } catch (IOException e) {
+         //   audiofile = File.createTempFile(filename, ".amr", sampleDir);
+            audiofile=new File(sampleDir,file_name+"-"+out+state+".amr");
+        } catch (Exception e) {
             e.printStackTrace();
             Log.d("save exception", "error" + e);
         }

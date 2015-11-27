@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             s[j]=list2.get(j);
   //          Log.d("data",s);
         }
-        CustomList adapter = new CustomList(MainActivity.this, s, imageId);
+        CustomList adapter = new CustomList(MainActivity.this, s, imageId, list);
         listview.setAdapter(adapter);
 /*        Context context = getApplicationContext();
         settings =context.getSharedPreferences("AUDIO_SOURCE", 0);
