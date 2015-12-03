@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         listview = (ListView)findViewById(R.id.listview);
-        final ArrayList<String> list= Filelist();
+        refresh();
+        /*final ArrayList<String> list= Filelist();
         final ArrayList<String> list2=new ArrayList<>();
         if(list !=null) {
             String v = "";
@@ -53,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             Log.d("Problem","can't create file");
-        }
+        }*/
+
 /*        Context context = getApplicationContext();
         settings =context.getSharedPreferences("AUDIO_SOURCE", 0);
         editor = settings.edit();
@@ -80,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
         return true;
     }
 
@@ -106,6 +107,10 @@ public class MainActivity extends AppCompatActivity {
             Log.d("home", "clicked");
             NavUtils.navigateUpFromSameTask(this);
             return true;
+        }
+        else if(id == R.id.action_refresh){
+            Log.d("Action" , "Refresh clicked");
+            refresh();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -162,4 +167,20 @@ public class MainActivity extends AppCompatActivity {
             }
             return list;
         }
+    public void refresh(){
+        final ArrayList<String> list= Filelist();
+        final ArrayList<String> list2=new ArrayList<>();
+        if(list !=null) {
+            String v = "";
+            for (int j = 0; j < list.size(); j++) {
+                v = list.get(j);
+                list2.add(j, v.substring(v.lastIndexOf("/") + 1));
+            }
+            CustomList adapter = new CustomList(MainActivity.this, imageId, list, list2);
+            listview.setAdapter(adapter);
+        }
+        else {
+            Log.d("Problem","can't create file");
+        }
+    }
 }
