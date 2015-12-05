@@ -1,43 +1,43 @@
 package com.example.callrecorder;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.text.Layout;
+import android.os.Build;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.media.MediaPlayer;
 import android.widget.Toast;
-
 import java.io.File;
 import java.util.ArrayList;
 
 import it.sauronsoftware.ftp4j.FTPClient;
 import it.sauronsoftware.ftp4j.FTPDataTransferListener;
 
-public class CustomList extends ArrayAdapter<String> {
+public class CustomList  extends ArrayAdapter<String>{
 
     private final Activity context;
     private final Integer imageId;
     private final ArrayList fileList, mainlist;
     MediaPlayer mediaPlayer = new MediaPlayer();
-    boolean flag = false;
+    boolean flag = true;
     ImageView previousImageView = null;
-
-    public CustomList(Activity context,
-                      Integer imageId, ArrayList<String> fileList, ArrayList<String> mainlist) {
+    boolean flag1=true;
+    final SeekBar seek = new SeekBar(getContext());
+    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+    AlertDialog alert1=null;
+    public CustomList(Activity context,Integer imageId, ArrayList<String> fileList, ArrayList<String> mainlist) {
         super(context, R.layout.list_single, fileList);
         this.context = context;
-
         this.imageId = imageId;
         this.fileList = fileList;
         this.mainlist = mainlist;
@@ -49,17 +49,83 @@ public class CustomList extends ArrayAdapter<String> {
         final View rowView = inflater.inflate(R.layout.list_single, null, true);
 //            View rowView = super.getView(position,view,parent);
         TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
-
         final ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
         txtTitle.setText(mainlist.get(position).toString());
 
+        Log.d("create create", " iii");
+        imageView.setImageResource(R.drawable.play);
+ //       AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        Alert();
         imageView.setOnClickListener(new ImageView.OnClickListener() {
+
 
             @Override
             public void onClick(View v) {
                 Log.d("mContext", "ImageView clicked for the row = " + position);
 
-                if (previousImageView == null) {
+                playmusic(fileList.get(position).toString());
+     //           seek.setMax(musiclength());
+                seek.setProgress(0);
+                try {
+                    alert1.show();
+                }
+                catch (Exception e){
+                    Log.d("again same" , "jsd;lfs"+e);
+                }
+                seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        Log.d("Stop", "Seeking");
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                        Log.d("start", "Seeking");
+                    }
+
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        if (fromUser) {
+                            int duration = mediaPlayer.getDuration();
+                            int moveto =  (progress*duration)/seek.getMax() -2;
+                            Log.d("seekto","total-music "+duration +" moved to " + moveto + " seek to " + seek.getMax() + " progress " + progress );
+                            mediaPlayer.seekTo(moveto);
+                            Log.d("seek", "changed to " + moveto);
+                        }
+                    }
+                });
+                alert1.setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+                    @Override
+                    public void onDismiss(DialogInterface builder1) {
+                        Log.d("alert", "dismissed");
+                        stopmusic();
+                        //builder1.cancel();
+                        alert1.dismiss();
+                    }
+                });
+
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        try
+                        {
+
+                            stopmusic();
+                            Log.d("successfully", "closed alert");
+                       //     alert1.dismiss();
+
+                        }
+                        catch (Exception e){
+                            Log.d("mediaPlayer",""+e);
+                        }
+                    }
+                });
+
+
+                /*if (previousImageView == null) {
                     previousImageView = imageView;
                     imageView.setImageResource(R.drawable.pause);
                     playmusic(fileList.get(position).toString());
@@ -85,7 +151,8 @@ public class CustomList extends ArrayAdapter<String> {
                         stopmusic();
                         playmusic(fileList.get(position).toString());
                     }
-                }
+                }*/
+
             }
         });
         txtTitle.setOnClickListener(new TextView.OnClickListener() {
@@ -142,6 +209,16 @@ public class CustomList extends ArrayAdapter<String> {
         return rowView;
     }
 
+    public void Alert(){
+        if(flag1){
+            flag1=false;
+            builder.setTitle("playing..");
+            seek.setMax(100);
+            builder.setView(seek);
+            alert1=builder.create();
+        }
+
+    }
     public void playmusic(String filepath) {
         try {
             mediaPlayer.setDataSource(filepath);
@@ -149,6 +226,15 @@ public class CustomList extends ArrayAdapter<String> {
             mediaPlayer.start();
         } catch (Exception e) {
             Log.d("can't play", "no file found");
+        }
+    }
+    public int  musiclength(){
+        try {
+            return mediaPlayer.getDuration();
+        }
+        catch (Exception e){
+            Log.d("Error" , "Can't get length" +e);
+                    return 100;
         }
     }
 
@@ -160,6 +246,7 @@ public class CustomList extends ArrayAdapter<String> {
             Log.d("Error", "cant stop music" + e);
         }
     }
+
 
     public void uploadFile(File fileName) {
         FTPClient client = new FTPClient();
@@ -187,6 +274,27 @@ public class CustomList extends ArrayAdapter<String> {
             }
         }
     }
+
+
+    /*@Override
+    public void run() {
+            int currentPosition = 0;
+            int total = mediaPlayer.getDuration();
+            seek.setMax(total);
+            Log.d("runnable" , "value" + mediaPlayer.getCurrentPosition() );
+            while (mediaPlayer != null && currentPosition < total) {
+                try {
+                    Thread.sleep(100);
+                    currentPosition = mediaPlayer.getCurrentPosition();
+                } catch (InterruptedException e) {
+                    return;
+                } catch (Exception e) {
+                    return;
+                }
+                seek.setProgress(currentPosition);
+            }
+
+    }*/
 
 
     /*******
