@@ -32,9 +32,11 @@ public class CustomList  extends ArrayAdapter<String>{
     boolean flag = true;
     ImageView previousImageView = null;
     boolean flag1=true;
-    final SeekBar seek = new SeekBar(getContext());
-    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-    AlertDialog alert1=null;
+   // final SeekBar seek = new SeekBar(getContext());
+     SeekBar seek =null;
+    Handler updateHandler = new Handler();
+    //AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+    //AlertDialog alert1=null;
     public CustomList(Activity context,Integer imageId, ArrayList<String> fileList, ArrayList<String> mainlist) {
         super(context, R.layout.list_single, fileList);
         this.context = context;
@@ -45,7 +47,7 @@ public class CustomList  extends ArrayAdapter<String>{
 
     @Override
     public View getView(final int position, final View view, final ViewGroup parent) {
-        LayoutInflater inflater = context.getLayoutInflater();
+        final LayoutInflater inflater = context.getLayoutInflater();
         final View rowView = inflater.inflate(R.layout.list_single, null, true);
 //            View rowView = super.getView(position,view,parent);
         TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
@@ -56,7 +58,8 @@ public class CustomList  extends ArrayAdapter<String>{
         imageView.setImageResource(R.drawable.play);
  //       AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
-        Alert();
+
+        //Alert();
         imageView.setOnClickListener(new ImageView.OnClickListener() {
 
 
@@ -64,11 +67,21 @@ public class CustomList  extends ArrayAdapter<String>{
             public void onClick(View v) {
                 Log.d("mContext", "ImageView clicked for the row = " + position);
 
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+// ...Irrelevant code for customizing the buttons and title
+                final View dialogView = inflater.inflate(R.layout.seekbar, null);
+                dialogBuilder.setView(dialogView);
+                seek = (SeekBar)dialogView .findViewById(R.id.seekBar);
+                seek.setMax(100);
+              final  TextView title = (TextView)dialogView .findViewById(R.id.title);
+              final  AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.show();
+                updateHandler.postDelayed(timerRunnable, 1000);
                 playmusic(fileList.get(position).toString());
      //           seek.setMax(musiclength());
                 seek.setProgress(0);
                 try {
-                    alert1.show();
+            //        alert1.show();
                 }
                 catch (Exception e){
                     Log.d("again same" , "jsd;lfs"+e);
@@ -78,16 +91,19 @@ public class CustomList  extends ArrayAdapter<String>{
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
                         Log.d("Stop", "Seeking");
+                        //updateHandler.removeCallbacks(timerRunnable);
                     }
 
                     @Override
                     public void onStartTrackingTouch(SeekBar seekBar) {
                         Log.d("start", "Seeking");
+                        updateHandler.postDelayed(timerRunnable,200);
                     }
 
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                         if (fromUser) {
+                          //  updateHandler.postDelayed(timerRunnable,500);
                             int duration = mediaPlayer.getDuration();
                             int moveto =  (progress*duration)/seek.getMax() -2;
                             Log.d("seekto","total-music "+duration +" moved to " + moveto + " seek to " + seek.getMax() + " progress " + progress );
@@ -96,14 +112,15 @@ public class CustomList  extends ArrayAdapter<String>{
                         }
                     }
                 });
-                alert1.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 
                     @Override
                     public void onDismiss(DialogInterface builder1) {
                         Log.d("alert", "dismissed");
                         stopmusic();
                         //builder1.cancel();
-                        alert1.dismiss();
+                        updateHandler.removeCallbacks(timerRunnable);
+                        alertDialog.dismiss();
                     }
                 });
 
@@ -115,7 +132,8 @@ public class CustomList  extends ArrayAdapter<String>{
 
                             stopmusic();
                             Log.d("successfully", "closed alert");
-                       //     alert1.dismiss();
+                            updateHandler.removeCallbacks(timerRunnable);
+                            alertDialog.dismiss();
 
                         }
                         catch (Exception e){
@@ -209,16 +227,27 @@ public class CustomList  extends ArrayAdapter<String>{
         return rowView;
     }
 
-    public void Alert(){
+    /*public void Alert(){
         if(flag1){
             flag1=false;
-            builder.setTitle("playing..");
-            seek.setMax(100);
-            builder.setView(seek);
+            //builder.setTitle("playing..");
+       //     seek.setMax(100);
+       //     builder.setView(seek);
             alert1=builder.create();
         }
 
-    }
+    }*/
+    Runnable timerRunnable = new Runnable() {
+
+        public void run() {
+            // Get mediaplayer time and set the value
+            seek.setProgress(mediaPlayer.getCurrentPosition()*seek.getMax()/mediaPlayer.getDuration());
+            // This will trigger itself every one second.
+            updateHandler.postDelayed(this, 500);
+        }
+    };
+
+
     public void playmusic(String filepath) {
         try {
             mediaPlayer.setDataSource(filepath);
