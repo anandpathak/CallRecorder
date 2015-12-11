@@ -46,38 +46,41 @@ public class TService extends BroadcastReceiver  {
 
         Bundle bundle;
         String state;
-        String inCall, outCall;
+        String outCall;
         public static boolean wasRinging = false;
         public static boolean setUpRecording = false;
 
         @Override
         public void onReceive(Context context, Intent intent) {
             SharedPreferences settings =context.getSharedPreferences("AUDIO_SOURCE", 0);
+            SharedPreferences.Editor editor = settings.edit();
             if (intent.getAction().equals(ACTION_IN)) {
                 if ((bundle = intent.getExtras()) != null) {
                     state = bundle.getString(TelephonyManager.EXTRA_STATE);
 //                    Toast.makeText(context, "state changed : " + state, Toast.LENGTH_LONG).show();
                         Log.d("State " ,state);
                     if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-                        inCall = bundle.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                        String inCall = bundle.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                        editor.putString("inCall",inCall);
+                        editor.commit();
                         wasRinging = true;
                         setUpRecording = true;
                         //Toast.makeText(context, "INcoming : " + inCall, Toast.LENGTH_LONG).show();
                         Log.d("Incoming Call" ," from : "+ inCall + "wasRinging : "+wasRinging);
                     } else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-
-                        Log.d("message" , " Oh ! he picked the call");
+                        String inCall= settings.getString("inCall","");
+                        Log.d("message" , " Oh ! he picked the call" + inCall);
                         if (wasRinging == true) {
 
                             Toast.makeText(context, "ANSWERED", Toast.LENGTH_LONG).show();
-                            Log.d("Answered the call" , "from :" + inCall);
+                            Log.d("Answered the call", "from :" + inCall);
                             if (setUpRecording) {
                                 recordstarted = true;
                                 setUpRecording = false;
                     //            SaveRecording.startRecording();
                                 try {
                                     String method = settings.getString("AUDIO_SOURCE", "");
-                                    Log.d("message", method);
+                                    Log.d("message", method + " : " + inCall );
                                     SaveRecording.startRecording(method,inCall,"-In");
                                 }
                                 catch (Exception e){
