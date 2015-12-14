@@ -22,6 +22,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 
+import javax.crypto.Cipher;
+
+import it.sauronsoftware.ftp4j.FTPClient;
+import it.sauronsoftware.ftp4j.FTPDataTransferListener;
+
 /**
  * Created by DELLANAND on 20/11/2015.
  */
@@ -43,7 +48,8 @@ public class TService extends BroadcastReceiver  {
     private static final String ACTION_OUT = "android.intent.action.NEW_OUTGOING_CALL";
 
     public SaveFile SaveRecording= new SaveFile();
-
+    static File audioFile;
+    //Handler updateHandler = new Handler();
         Bundle bundle;
         String state;
         String outCall;
@@ -51,9 +57,10 @@ public class TService extends BroadcastReceiver  {
         public static boolean setUpRecording = false;
 
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(final Context context, Intent intent) {
             SharedPreferences settings =context.getSharedPreferences("AUDIO_SOURCE", 0);
             SharedPreferences.Editor editor = settings.edit();
+            this.context=context;
             Boolean SwitchState = settings.getBoolean("SWITCH",true);
             if(SwitchState) {
                 if (intent.getAction().equals(ACTION_IN)) {
@@ -83,7 +90,9 @@ public class TService extends BroadcastReceiver  {
                                     try {
                                         String method = settings.getString("AUDIO_SOURCE", "");
                                         Log.d("message", method + " : " + inCall);
-                                        SaveRecording.startRecording(method, inCall, "-In");
+                                        audioFile=SaveRecording.startRecording(method, inCall, "-In");
+                                        Log.d("recording Stared","File name" + audioFile.getAbsolutePath().toString());
+
                                     } catch (Exception e) {
                                         Log.d("Recording Exception1 : ", e.toString());
                                     }
@@ -99,7 +108,24 @@ public class TService extends BroadcastReceiver  {
                                 Log.d("Message", "Stopping recording");
                                 SaveRecording.stopRecording();
 //                            saverecordings.stopRecording();
+                                Thread xx= new Thread(){
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            Log.d("Thread" , "initiated" + audioFile.getAbsolutePath().toString());
+                                            sleep(1000);
+                                            uploadFile(context, audioFile);
+                                            Log.d("Thread" , "Executed");
+                                        }
+                                        catch (Exception e){
+                                            Log.d("thread Exception" , e.toString());
+                                        }
+                                    }
+                                };
+                                xx.start();
+
                                 //SaveFile.recorder.stop();
+        //                        updateHandler.postDelayed(timerRunnable, 1000);
                                 recordstarted = false;
                             }
 
@@ -114,7 +140,8 @@ public class TService extends BroadcastReceiver  {
                         try {
                             String method = settings.getString("AUDIO_SOURCE", "");
                             Log.d("message", method);
-                            SaveRecording.startRecording(method, outCall, "-Out");
+                            audioFile=SaveRecording.startRecording(method, outCall, "-Out");
+                            Log.d("recording Stared","File name" + audioFile.getAbsolutePath().toString());
                         } catch (Exception e) {
                             Log.d("Recording Exception2", e.toString());
                         }
@@ -125,5 +152,89 @@ public class TService extends BroadcastReceiver  {
                 }
             }
         }
+
+    public void uploadFile(Context context,File fileName) {
+        FTPClient client = new FTPClient();
+        SharedPreferences userShare = context.getSharedPreferences("AUDIO_SOURCE", 0);
+        String USERNAME = userShare.getString("USERNAME", "");
+        String PASSWORD = userShare.getString("PASSWORD", "");
+        String FTP_HOST = userShare.getString("FTP_HOST", "");
+        Log.d("data" ,USERNAME+" "+PASSWORD+" "+FTP_HOST);
+        try {
+
+            client.connect(FTP_HOST);
+            client.login(USERNAME, PASSWORD);
+            client.setType(FTPClient.TYPE_BINARY);
+            client.changeDirectory("/");
+            client.upload(fileName, new MyTransferListener());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("upload Error", e.toString());
+            //Toast.makeText(context,"client not connected !", Toast.LENGTH_LONG).show();
+            try {
+                client.disconnect(true);
+            } catch (Exception e2) {
+                Log.e("upload Error", e.toString());
+                //e2.printStackTrace();
+            }
+        }
+    }
+
+
+
+
+    /*******
+     * Used to file upload and show progress
+     **********/
+
+    private class MyTransferListener implements FTPDataTransferListener {
+
+        public void started() {
+
+            //btn.setVisibility(View.GONE);
+            // Transfer started
+            //Toast.makeText(context, " Upload Started ...", Toast.LENGTH_SHORT).show();
+            Log.d("upload", " started");
+            //System.out.println(" Upload Started ...");
+        }
+
+        public void transferred(int length) {
+
+            // Yet other length bytes has been transferred since the last time this
+            // method was called
+           // Toast.makeText(context, " transferred ..." + length, Toast.LENGTH_SHORT).show();
+            Log.d("upload", " transferred");
+            //System.out.println(" transferred ..." + length);
+        }
+
+        public void completed() {
+
+            //btn.setVisibility(View.VISIBLE);
+            // Transfer completed
+
+        //    Toast.makeText(context, " completed ...", Toast.LENGTH_SHORT).show();
+            Log.d("upload", " completed");
+            //System.out.println(" completed ..." );
+        }
+
+        public void aborted() {
+
+            //btn.setVisibility(View.VISIBLE);
+            // Transfer aborted
+           // Toast.makeText(context," transfer aborted ,please try again...", Toast.LENGTH_SHORT).show();
+            //System.out.println(" aborted ..." );
+            Log.d("upload", " transfer aborted");
+        }
+
+        public void failed() {
+
+            //btn.setVisibility(View.VISIBLE);
+            // Transfer failed
+            //  System.out.println(" failed ..." );
+            Log.d("upload", " failed");
+        }
+
+    }
 
     }

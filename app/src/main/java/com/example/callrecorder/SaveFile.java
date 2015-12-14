@@ -30,7 +30,7 @@ public class SaveFile {
     {
         this.recorder=recorder;
     }*/
-    public void startRecording(String method,String filename, String state) {
+    public File startRecording(String method,String filename, String state) {
         Log.d("recording Started" , "Yo I have been called" );
         String out = new SimpleDateFormat("dd-MM-yyyy hh-mm-ss").format(new Date());
         File sampleDir = new File(Environment.getExternalStorageDirectory(), "/TestRecordingDasa1");
@@ -116,6 +116,7 @@ public class SaveFile {
             e.printStackTrace();
         }
         TService.recorder.start();
+        return  audiofile;
     }
     public void stopRecording(){
        TService.recorder.stop();

@@ -183,7 +183,7 @@ public class CustomList  extends ArrayAdapter<String>{
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Choose option..");
                 final CharSequence[] items = {
-                        "Delete", "Upload"
+                        "Delete",
                 };
                 builder.setItems(items, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {

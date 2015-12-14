@@ -58,17 +58,17 @@
         <RadioButton android:id="@+id/VOICE_CALL"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="VOICE_CALL"
+            android:text="VOICE CALL MODE"
             android:onClick="onRadioButtonClicked"/>
         <RadioButton android:id="@+id/VOICE_COMMUNICATION"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="VOICE_COMMUNICATION"
+            android:text="SPEAKER MODE"
             android:onClick="onRadioButtonClicked"/>
         <RadioButton android:id="@+id/DEFAULT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="DEFAULT"
+            android:text="DEFAULT MODE"
             android:onClick="onRadioButtonClicked"/>
     </RadioGroup>
 
