@@ -14,6 +14,7 @@ import android.view.ViewDebug;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ public class SettingActivity extends AppCompatActivity {
     SharedPreferences settings;
     SharedPreferences.Editor editor;
     EditText username,passwd,ftp;
+    Switch switchState;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +39,8 @@ public class SettingActivity extends AppCompatActivity {
         settings =context.getSharedPreferences("AUDIO_SOURCE", 0);
         editor = settings.edit();
         RadioGroup rg=(RadioGroup)findViewById(R.id.radiogroup);
-
+        switchState =(Switch)findViewById(R.id.SWITCH);
+        switchState.setChecked(settings.getBoolean("SWITCH",true));
         //rg.check(R.id.DEFAULT);
         //Set variables
         String choice = settings.getString("AUDIO_SOURCE","");
@@ -113,6 +116,15 @@ public class SettingActivity extends AppCompatActivity {
                 }
                 break;
         }
+    }
+    public void SwitchEvent(View view){
+            Log.d("message", "switch event clicked " + switchState.isChecked());
+            editor.putBoolean("SWITCH", switchState.isChecked());
+            editor.commit();
+            if(switchState.isChecked())
+                Toast.makeText(getApplicationContext(),"Enabled recording !" ,Toast.LENGTH_SHORT ).show();
+            else
+                Toast.makeText(getApplicationContext(),"disabled recording !" ,Toast.LENGTH_SHORT ).show();
     }
     public void OnSaveButtonClicked(View view){
 
