@@ -1,6 +1,5 @@
 # CallRecorder
-Android Application to record the call
-Build an android Application which will record incoming and outgoing calls using android Broadcast reciever.<br/>
+An android Application which will record incoming and outgoing calls using android Broadcast reciever.<br/>
 Not all android Device Support both end call recording hence VOICE_CALL api won't work on those device for them speaker can be used to 
 record both end using VOICE_COMMUNICATION api.<br/><br/>
 **The application have features** <br/>
