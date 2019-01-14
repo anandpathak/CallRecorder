@@ -24,5 +24,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
-    compile files('C:/Users/DELLANAND/AndroidStudioProjects/CallRecorder/libs/ftp4j-1.7.2.jar')
+    # download jar from here and change the path https://sourceforge.net/projects/ftp4j/?source=typ_redirect
+    compile files('../libs/ftp4j-1.7.2.jar')
 }
